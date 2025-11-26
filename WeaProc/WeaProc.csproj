@@ -1,0 +1,141 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>NCEIData</RootNamespace>
+    <AssemblyName>WeatherProcessorV2.60</AssemblyName>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>   
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>NCEIData.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="atcControls">
+      <HintPath>..\..\atcPackages\atcControls.dll</HintPath>
+    </Reference>
+    <Reference Include="atcData">
+      <HintPath>..\..\atcPackages\atcData.dll</HintPath>
+    </Reference>
+    <Reference Include="atcUtility">
+      <HintPath>..\..\atcPackages\atcUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="atcWDM">
+      <HintPath>..\..\atcPackages\atcWDM.dll</HintPath>
+    </Reference>
+    <Reference Include="D4EM.Data">
+      <HintPath>..\..\D4EMPackages\D4EM.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="D4EM.Data.MetCmp">
+      <HintPath>..\..\D4EMPackages\D4EM.Data.MetCmp.dll</HintPath>
+    </Reference>
+    <Reference Include="MapWindow.Interfaces">
+      <HintPath>..\WdmUpload\References\MapWindow.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="MapWinInterfaces, Version=4.8.6.42296, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\WdmUpload\References\MapWinInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="WebDownload, Version=1.3.5358.29693, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\WebDownload.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>7</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Word">
+      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>8</VersionMajor>
+      <VersionMinor>6</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\met.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="License-LGPL.txt" />
+    <Content Include="met.ico" />
+    <None Include="Resources\openfolderhs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataDownload\DataDownload.csproj" />
+    <ProjectReference Include="..\MapWinUtility\MapWinUtility-DS.vbproj" />
+    <ProjectReference Include="..\WdmUpload\WdmUpload.vbproj" />
+    <ProjectReference Include="..\WeaComp\WeaComp.vbproj" />
+    <ProjectReference Include="..\WeaDB\WeaSDB.csproj" />
+    <ProjectReference Include="..\WeaEFDC\WeaEFDC.csproj" />
+    <ProjectReference Include="..\WeaGen\WeaGen.csproj" />
+    <ProjectReference Include="..\WeaLSPCAir\WeaLSPCAir.csproj" />
+    <ProjectReference Include="..\WeaModelSDB\WeaModelSDB.csproj" />
+    <ProjectReference Include="..\WeaModel\WeaModel.csproj" />
+    <ProjectReference Include="..\WeaScenario\WeaScenario.csproj" />
+    <ProjectReference Include="..\WeaSWAT\WeaSWAT.csproj" />
+    <ProjectReference Include="..\WeaSWMM\WeaSWMM.csproj" />
+    <ProjectReference Include="..\WeaUtil\WeaUtil.csproj" />
+    <ProjectReference Include="..\WeaWASP\WeaWASP.csproj" />
+    <ProjectReference Include="..\WeaWDM\WeaWDM.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="DotSpatial.Controls" Version="4.0.656" />
+    <PackageReference Include="DotSpatial.Data" Version="4.0.656" />
+    <PackageReference Include="DotSpatial.Symbology" Version="4.0.656" />
+    <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta2" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="NetTopologySuite" Version="2.6.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="ZedGraph" Version="6.0.0-alpha0001" />
+    <PackageReference Include="ZedGraph.WinForms" Version="6.0.0-alpha0001" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="AssemblyInfo.cs" />
+    <Compile Remove="clsFill.cs" />
+    <Compile Remove="clsRainModel.cs" />
+    <Compile Remove="clsSites.cs" />
+    <Compile Remove="clsStats.cs" />
+    <Compile Remove="clsWeaModel.cs" />
+    <Compile Remove="frmDrawPt.cs" />
+    <Compile Remove="frmDrawPt.Designer.cs" />
+    <Compile Remove="frmMet.cs" />
+    <Compile Remove="frmMet.designer.cs" />
+    <Compile Remove="NCEIstats.cs" />
+    <Compile Remove="ProcessHourly.cs" />
+    <Compile Remove="Resources.Designer.cs" />
+    <Compile Remove="Settings.Designer.cs" />
+    <EmbeddedResource Remove="frmDrawPt.resx" />
+    <EmbeddedResource Remove="frmMet.resx" />
+    <EmbeddedResource Remove="Resources.resx" />
+  </ItemGroup>
+</Project>
