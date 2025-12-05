@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin />
+        <pubdate />
+        <title />
+        <geoform />
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract />
+      <purpose />
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>Unknown</begdate>
+          <enddate>Unknown</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>
+      </current>
+    </timeperd>
+    <status>
+      <progress />
+      <update />
+    </status>
+    <spdom>
+      <bounding>
+        <westbc />
+        <eastbc />
+        <northbc />
+        <southbc />
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>None</themekt>
+        <themekey />
+      </theme>
+    </keywords>
+    <accconst>None</accconst>
+    <useconst>None</useconst>
+  </idinfo>
+  <dataqual>
+    <logic />
+    <complete />
+    <lineage>
+      <procstep>
+        <procdesc>Downloaded from https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS2:NLDAS_FORA0125_H_v2.0:Wind_N&amp;startDate=2014-12-31T00&amp;endDate=2024-12-31T00&amp;location=GEOM:POINT(-120.5625000,%2044.9375000)&amp;type=asc2</procdesc>
+        <procdate>20251030</procdate>
+        <proctime>170857</proctime>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <metainfo>
+    <metd>20251030</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper />
+        </cntperp>
+        <cntaddr>
+          <addrtype />
+          <city />
+          <state />
+          <postal />
+        </cntaddr>
+        <cntvoice />
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>

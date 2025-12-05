@@ -1,0 +1,5 @@
+ProjectDir=D:\WeatherProc\WEAPROC\WeaProc\ 
+SolutionDir=D:\WeatherProc\WEAPROC\ 
+Configuration=Debug 
+SolutionDir=D:\WeatherProc\WEAPROC\ 
+Configuration=Debug 
