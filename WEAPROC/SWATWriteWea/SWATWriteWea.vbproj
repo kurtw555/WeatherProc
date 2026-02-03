@@ -36,6 +36,9 @@
     <Reference Include="atcWDM">
       <HintPath>..\..\atcPackages\atcWDM.dll</HintPath>
     </Reference>
+    <Reference Include="MapWinUtility">
+      <HintPath>..\..\atcPackages\MapWinUtility.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="My Project\Application.Designer.vb">
@@ -70,8 +73,5 @@
     <Compile Remove="modSwatMetData.vb" />
     <Compile Remove="modSWATWeaData.vb" />
     <Compile Remove="SWATmodel.vb" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MapWinUtility\MapWinUtility-DS.vbproj" />
   </ItemGroup>
 </Project>

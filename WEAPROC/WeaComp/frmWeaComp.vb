@@ -5,7 +5,7 @@ Imports System.Windows.Forms
 
 Imports atcUtility
 Imports atcData
-'Imports atcMetCmp
+Imports atcMetCmp
 Imports atcWDM
 Imports atcData.atcDataManager
 Imports MapWinUtility

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36511.14 d17.14
+VisualStudioVersion = 17.14.36511.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeaProc", "WeaProc\WeaProc.csproj", "{24D8CAE5-B26B-43E7-CDA6-194674371DD3}"
 EndProject
@@ -24,8 +24,6 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WdmUpload", "WdmUpload\WdmUpload.vbproj", "{A87C9D0F-A3B6-C1DD-10F2-9CEE42C13634}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SWATWriteWea", "SWATWriteWea\SWATWriteWea.vbproj", "{58E76CF4-EE5C-F617-D3B5-961ED0D9BAC9}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MapWinUtility-DS", "MapWinUtility\MapWinUtility-DS.vbproj", "{1F82717D-5469-7C8E-44BC-F6D3AD980227}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "EFDCWriteWea", "EFDCWriteWea\EFDCWriteWea.vbproj", "{96498EF8-7DC4-46B5-F549-DFACB5E67859}"
 EndProject
@@ -93,10 +91,6 @@ Global
 		{58E76CF4-EE5C-F617-D3B5-961ED0D9BAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58E76CF4-EE5C-F617-D3B5-961ED0D9BAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58E76CF4-EE5C-F617-D3B5-961ED0D9BAC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F82717D-5469-7C8E-44BC-F6D3AD980227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F82717D-5469-7C8E-44BC-F6D3AD980227}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F82717D-5469-7C8E-44BC-F6D3AD980227}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F82717D-5469-7C8E-44BC-F6D3AD980227}.Release|Any CPU.Build.0 = Release|Any CPU
 		{96498EF8-7DC4-46B5-F549-DFACB5E67859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96498EF8-7DC4-46B5-F549-DFACB5E67859}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96498EF8-7DC4-46B5-F549-DFACB5E67859}.Release|Any CPU.ActiveCfg = Release|Any CPU

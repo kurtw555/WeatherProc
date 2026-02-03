@@ -34,6 +34,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Dev\EPAPLUGINS\BASINS45\bin\MapWinInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="MapWinUtility">
+      <HintPath>..\..\atcPackages\MapWinUtility.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="System.Drawing" />
@@ -44,8 +47,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MapWinUtility\MapWinUtility-DS.vbproj" />
   </ItemGroup>
 </Project>

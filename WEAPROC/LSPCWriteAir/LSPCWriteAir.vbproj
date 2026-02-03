@@ -42,8 +42,5 @@
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MapWinUtility\MapWinUtility-DS.vbproj" />
-  </ItemGroup>
   <PropertyGroup />
 </Project>

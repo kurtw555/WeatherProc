@@ -17,7 +17,6 @@
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
-
   <ItemGroup>
     <Reference Include="atcData">
       <HintPath>..\..\atcPackages\atcData.dll</HintPath>
@@ -40,8 +39,5 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MapWinUtility\MapWinUtility-DS.vbproj" />
   </ItemGroup>
 </Project>
