@@ -1765,7 +1765,19 @@ namespace NCEIData
         {
             bool isWDM = true;
             if (string.IsNullOrEmpty(WdmFile))
-                isWDM = BrowseForWDM();
+            {
+                OpenFileDialog openFD = new OpenFileDialog();
+                openFD.AddExtension = true;
+                openFD.CheckFileExists = true;
+                openFD.DefaultExt = ".wdm";
+                openFD.Filter = "WDM files (*.wdm)|*.wdm|All files (*.*)|*.*";
+                var result = openFD.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    WdmFile = openFD.FileName;
+                    isWDM = true;
+                }
+            }                
 
             if (isWDM)
             {
@@ -1796,6 +1808,33 @@ namespace NCEIData
             fBasin.Dispose();
         }
 
+        private void mnuExportSWMM_Click(object sender, EventArgs e)
+        {
+            ClearMapSites();
+            optModel = (int)Model.SWMM;
+            if (!ValidWDM()) return;
+
+            WriteStatus("Reading time series attributes of WDMFile ...");
+            frmSWMM fSWMM = new frmSWMM(uxMap, WdmFile, lstOfPoints);
+            WriteStatus("Ready ...");
+            if (fSWMM.ShowFormSWMM())
+            {
+
+                fSWMM.ShowDialog();
+                {
+                    mnuMain.Enabled = true;
+                    // Remove our drawing layer from the map.
+                    appManager.Map.MapFrame.DrawingLayers.Remove(mapPointLayer);
+                    appManager.Map.MapFrame.Invalidate();
+                }
+            }
+            mnuMain.Enabled = true;
+            appManager.Map.MapFrame.DrawingLayers.Remove(mapPointLayer);
+            appManager.Map.MapFrame.Invalidate();
+            fSWMM.Dispose();
+        }
+
+        #endregion
         private void SelectPointFromMap()
         {
             ClearMapSites();
@@ -2457,7 +2496,7 @@ namespace NCEIData
 
                 //add point to drawing layers
                 Debug.WriteLine("num point est features = " + mapPoint.Features.Count);
-                mapPoint.AddFeature(new NetTopologySuite.Geometries.Point(c));
+                mapPoint.AddFeature(new NetTopologySuite.Geometries.Point(c.X, c.Y));
                 //Debug.WriteLine("num point est features = " + mapPoint.Features.Count);
                 appManager.Map.MapFrame.Invalidate();
             }
@@ -2722,7 +2761,7 @@ namespace NCEIData
             Process sara = new Process();
             sara.StartInfo.FileName = Path.Combine(Application.StartupPath, TSutilExe);
             if (!string.IsNullOrEmpty(WdmFile))
-                  sara.StartInfo.Arguments = WdmFile;
+                sara.StartInfo.Arguments = WdmFile;
             sara.Start();
         }
         private void mnuManageWDM_Click(object sender, EventArgs e)
@@ -2762,7 +2801,7 @@ namespace NCEIData
                 }
                 catch (Exception ex)
                 {
-                    string msg = "Error in spatial analysis routine! "  + crlf + crlf + ex.Message + ex.StackTrace;
+                    string msg = "Error in spatial analysis routine! " + crlf + crlf + ex.Message + ex.StackTrace;
                     MessageBox.Show(msg, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     isOpenAnnualWDM = false;
                 }
@@ -2920,7 +2959,7 @@ namespace NCEIData
             }
             catch (Exception ex)
             {
-                string msg = "Error opening "+ sFile +crlf+crlf+ex.Message+ex.StackTrace;
+                string msg = "Error opening " + sFile + crlf + crlf + ex.Message + ex.StackTrace;
                 MessageBox.Show(msg, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 isOpenAnnualWDM = false;
                 isValid = false;
@@ -3131,7 +3170,7 @@ namespace NCEIData
             else { lwdm.Clear(); lwdm = null; }
             return true;
         }
-        #endregion "WDM Exports"
+
 
         public void WriteStatus(string msg)
         {
@@ -3217,5 +3256,6 @@ namespace NCEIData
                 return null;
             }
         }
+
     }
 }

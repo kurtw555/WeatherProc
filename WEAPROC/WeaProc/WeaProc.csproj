@@ -3,16 +3,24 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>NCEIData</RootNamespace>
-    <AssemblyName>WeatherProcessorV2.60</AssemblyName>    
+    <AssemblyName>WeatherProcessorV3.00</AssemblyName>    
     <UseWindowsForms>true</UseWindowsForms>    
+    <Platforms>AnyCPU;x86</Platforms>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
+    <OutputPath>..\bin\Debug</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <OutputPath>..\bin\Debug</OutputPath>
   </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+      <Optimize>true</Optimize>
+      <OutputPath>..\bin\Release</OutputPath>
+    </PropertyGroup>
   <PropertyGroup>
     <StartupObject>NCEIData.Program</StartupObject>
   </PropertyGroup>
@@ -68,6 +76,8 @@
     <None Include="Resources\openfolderhs.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\atcWdmVb\atcWdmVb-DS.vbproj" />
+    <ProjectReference Include="..\atcWDM\atcWDM-DS.vbproj" />
     <ProjectReference Include="..\DataDownload\DataDownload.csproj" />
     <ProjectReference Include="..\WdmUpload\WdmUpload.vbproj" />
     <ProjectReference Include="..\WeaComp\WeaComp.vbproj" />
@@ -92,7 +102,7 @@
     <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NetTopologySuite" Version="2.6.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.2" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="ZedGraph" Version="6.0.0-alpha0001" />

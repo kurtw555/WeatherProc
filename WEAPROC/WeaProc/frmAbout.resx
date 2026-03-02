@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -121,42 +121,40 @@
   <data name="logoPictureBox.ErrorImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vQAADr0BR/uQrQAAA6hJREFUSEvVlF9o21UUx38v25uDwR72MFAYwl63TgaCqKwPE0E3EESY04qrpaBt
-        J9pRB1YzW+1D11LStEmTtrY1Um2tSWeyzQbGXFNpSu1oYre5tdiaTpOuScyyNv8+3nt/aV1qkCAo+IXD
-        Off+fud8773nj8a/jP+eIJ1Ok0qlNkWuJbLZLMlkSom0M5mM0CnxQa5TJBLr4ltS/fsg8gjW1tawWCxY
-        rVY8Ho/SZrNZOK4zNXWNI0e+VzI9Pct55wDB6XL4tRr/5dc5+95zXDlfJQgjuWg68ghWVlaor6/Hbrcz
-        MjKiyCorK7l40cOBA1+iaQklJSXD2Kw2vjIfgp+fZNZ9kE/efZiA5xnIhHLRdOQRxGIxWltbcTqdGI1G
-        mpubaWxs5OpVHydPxqirg3Jx6BMnouJGAew97zN/5XHGh0r4oPoRZi48WxyBzWZjbGyMlpYWEbSO9fUE
-        3d3Q1ga7diFuqf9/dzWK3fYONzyHiPufILP4IqR+0z/mkEcQDoepra2lurpaBa6oqFBEEpLg9GnYvRsM
-        BrWlEAqFsRrfxN17kEjgmKiSv7mBrAyXyyUCGKipqWF0dFRVjESHGerOQNUpMLarrU1EYnFc34zQY3qL
-        eOxObldHHsEGJicn6erqIhgMshpZZS12nzvfpgh8muXHvqyy2ajIe3G4MKr0qniyraX6FwKfz4fD4VDP
-        ZTKZMJw14HV5sb/2Gd+VXVYy8Gq/SFjO4ZdFeP5pXRdAHkEkEsHtdrOwsMDg4CATExM4nA4Qh2x/qZ2m
-        0iYl0ub3nJMMfKy0eAKZA6klQWdnJzPXZhSB5biFW1W3lEh7k+AHHxx+TNcFUPCJZB+EQiFRlm00NDYw
-        7hrH8cbXLJ8Ksvx2kJHy4T+fqK8LHhW1K3UBFEyy1+ulo6ODpaUlleRk/D7OxhQfv5CltjTL0IciyfqI
-        IvzTTeaaPlK6EAoSyAEnk7wx6CQs4oCGBnj5FTh3Tt9bFlV2VDTIQ729HO3pUeutKEhQCKK5VeCyMkS3
-        i8F4L8rxvj60uTm0oSE0v1+t49FozkNHUQRymppMGdF8sGOHaDgxkxZuzrFHTFtNPKMmBqIk2SNOsXj7
-        ds5LR1EEly6Ns2+fj507hYPw2Lt3ii8+d3C4pxttfh5NzCxtdpanBOFdURwPosgbrInxMcy2bQG2bw8o
-        O51O4r9+nf39/Wiid/YPDKj1VhSdg0QiLgbfohJpb+CGCOoQM0vqQiia4J/i/04AfwAaKRKDfVVuWQAA
-        AABJRU5ErkJggg==
+        vQAADr0BR/uQrQAAA5lJREFUSEvVlFFoW2UUx+/L9uZg0Ic9DBSGsNetk4EgKuvDRNANBBHmtOJqKWjb
+        iXbEgdHMRvvQtZQ2bdMkrW2NVFtrkplss4Ex11SaUDua2G5uLTam07RrErMsvUnuT74v69a0cQTRB/9w
+        OOfcm3N+3O87OQr/sZTND/5tbQFks1kymcx9E7mQpmmoakaaiHO5HJqWAU3kGVKpNVRV3dyuEJBOpzGb
+        zVgsFrxer/Td3d2o6hqBwFUOH/5R2tTUDOecg0SmquD3OoKX3uTMBy9w+VwtaLGNLQsBKysr6PV67HY7
+        o6OjElZTU8OFC1727/8aRUlJKy8fwWqx8k33Qfj1aWY8B/js/UcJeZ+DXHRjy0JAIpGgtbUVp9NJe3s7
+        zc3NGI1Grlzxc+JEAp0Oqqrg+PE4gUAIe++HzF9+kvHhcj6qe4zp88+XBrBarYyNjdHS0oJOp2NtLYXN
+        Bm1tUFYGen3+97dX49it73HNe5Bk8Clyiy9D5o+NLQsBy8vLNDQ0UFdXJxtXV1dLkJAAnDoFu3aBwfCg
+        JhpdxtL+Np6+A8RCRyH7kC8Qk+F2uzEYDNTX1+NyueTECHV2g+401J6E9o6NVRBLJHF/N0qv6R2SiVsF
+        77aMqdDk5CQ9PT1EIhFWY6ukE3e59X2G0OcaP/drMmZ9Iu8k4bxL+tXV+JZR3QLw+/04HA55XCaTCcMZ
+        Az63D/sbX/BD5SVpg68PQOJewW+L8OKzeV9EBYBYLIbH42FhYYGhoSEmJiZwOB2QhI5XOmiqaJImYv68
+        VyQaH60oHSDuQHgB6OrqYvrqtASYj5m5UXtDmojvA37yw6En8r6Iih6R+B9Eo1Ha2tpoNDYy7h7H8da3
+        LJ2MsPRuhNGqkQdH1N8Dj5flfRFtAQj5fD46OzsJh8PyktXkXZzGDJ++pNFQoTH8cQbyK4rlX64z2/SJ
+        9MVUFCAWnLjk9UUnZO4BQyO8+hqcPZt/thSJcMRm45G+Po709sp8s4oCislqzTeurITWVkjfiXOsvx9l
+        dhZleBglGJR5Mh4vqCsJILapyZSjvh527EDupIXrs+y2WFDCYZSaGgnZbbWyePNmQW1JgIsXx9m718/O
+        naAosGdPgK++dHCo14YyP4/S0oIyM8MzFgu3ow9ZFX8nVU1jMIywbVuI7dtDMs5mVYJzc+wbGEDxeNg3
+        OCjzzSoJIJRKJRkbW5Qm4nVdm5vD4XJJX0wlA/6p/v+AvwAaKRKDY7ScXAAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="logoPictureBox.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADAAAAAtCAYAAADoSujCAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vQAADr0BR/uQrQAAAgRJREFUaEPtkdFxhjAMgxmhK3SVTtaHf86uQnGCg2LkOOEKtFe+OxFijCPBNP9x
-        ngB38wS4m/8RYJqm+fV6UckzhtTlUVbdk/ZfH1T5vaxUC6gnE2QQGlawlg4DsgFZUVtPMWdE6wHbVAc0
-        inu8t+Zky7VcVlohqmcB20QHNWlNWwlt86rlsvaicavyPCBPa2BN4h6FrB4reK0OkT/ARX8A79OBgG5l
-        RTFsiJ0CnLEbalKl6N6aF7Ck5klboRkioDE2g+aZWgHUuKqFGyIgGJsHM+MiZl7QsqyoCJm3CxLQMXYb
-        bOXBHjXad5T5PxVgFDmbaZTWR1KGx0Zf/2qGnHQZ/wzk8f6WNUh3AGte/wQqsZhM98Z4qXmcGaCY62E1
-        iyGqvcdZAaz5aK+GrXFdXc78A4gatmsBzYJuC7AzuOCaF9As6LYAAjXqgWZBzQBq/kCIbmc2hOytEmgW
-        VGqMKwIIxWQLY3wnjwPmhaEAQvW1HeQx0xmcMtaajQLoR+n5OJZTA8iK94xkWlaU10zo7xwATeO9hZpX
-        sRcIfV2D2LNlv68Z87IntYi44wB6rqwohAawdfsSIe44gJ4rKwr5lQHS4cvEtpaL9sqqkj2pRcQdg2Qj
-        sjItF2BnGGV6Pfq6BuEh+FE0hNPL6O8cpA7RPib3bhrhtABX8QS4myfA3TwB7mWevwG85k2TkUVdRAAA
+        vQAADr0BR/uQrQAAAchJREFUaEPtk2FuwyAMRnOEXWFX2cn6I+fcVTo5hBR/2NhGS0gknmS1ARe+R+jy
+        fjgLDjyNKTCaKTAal8CyLO91XcWiOQkap6lUvGd7/v0RK/0u1TZmIO9egOEzLQkevpbQBMRxA1MAw0vf
+        MVwdPibB5gy6BbCIdnguoQmUIpcLZIqDNsa4RD79S95A+b28GkR+xNOXQImqDJRlP2gnrYUnyiFLgGhK
+        GDSWTaAAVkvA8wYyqoSBsWxaGEO3whM9AkR1//9DgCj/XOyPpiBNSWMaTMQgsKwfPHnvG0Bah5SxOwDr
+        9K8mlMQV/GWUxvdXqiCORAkMj/+HY/6190LwY0zjTAEM32QPW0qwZ42zBDC89Vyedhl8mACSA+Pnwd2u
+        UBWwFZ64mwAhBtXoEcjhOyTcyVCCnrE27ipAoIQIBK9KoyM84UjEYaetQNNSncEpy2JYS0C8ik5i3U5y
+        hjK4lmsLvQc5SmsW8HcG8AqI4YMSvq4guLd0harw+QoFJeyODvANuAVwHH8kYHd08FiBdA3q4LzSlqKA
+        MGZhdwRpS/DtqsDB8ISvK4gsIW8lSii9Ev7OIFyivc1xffaKEOu+IVNgNFNgNFNgNH+85k2T6hH2HwAA
         AABJRU5ErkJggg==
 </value>
   </data>
   <data name="textBoxDescription.Text" xml:space="preserve">
-    <value>Model Weather Data Processor Ver 2.5- Allows downloading available meteorological stations and data from the global hourly (ISD), GHCN daily, COOP Hourly Rainfall, NLDAS and GLDAS datasets.
+    <value>Model Weather Data Processor Ver 3.0- Allows downloading available meteorological stations and data from the global hourly (ISD), GHCN daily, COOP Hourly Rainfall, NLDAS and GLDAS datasets.
 Includes a stochastic timeseries generator.
 
 Powered by DotSpatial, BASINS WDM Utilities and SQLite.
