@@ -57,6 +57,9 @@
     <Reference Include="atcWDM">
       <HintPath>..\..\atcPackages\atcWDM.dll</HintPath>
     </Reference>
+    <Reference Include="atcWdmVb">
+      <HintPath>..\..\atcPackages\atcWdmVb.dll</HintPath>
+    </Reference>
     <Reference Include="D4EM.Data">
       <HintPath>..\..\D4EMPackages\D4EM.Data.dll</HintPath>
     </Reference>
@@ -76,8 +79,6 @@
     <None Include="Resources\openfolderhs.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\atcWdmVb\atcWdmVb-DS.vbproj" />
-    <ProjectReference Include="..\atcWDM\atcWDM-DS.vbproj" />
     <ProjectReference Include="..\DataDownload\DataDownload.csproj" />
     <ProjectReference Include="..\WdmUpload\WdmUpload.vbproj" />
     <ProjectReference Include="..\WeaComp\WeaComp.vbproj" />
