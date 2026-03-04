@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeaModel;
 using WeaModelSDB;
@@ -115,7 +115,7 @@ namespace NCEIData
             NLDASVars.Add("LWdown", "LRAD");//longwave rad
             //NLDASVars.Add("PEVAPsfc", "PEVT");
         }
-        public void ProcessNLDASdata()
+        public async void ProcessNLDASdata()
         {
             Cursor.Current = Cursors.WaitCursor;
 
@@ -147,7 +147,7 @@ namespace NCEIData
 
                 TimeZoneShift = GetTimeZoneOfGrid(site);
 
-                if (DownloadData_NLDAS(lstSelVariables, site, isite, nsites))
+                if (await DownloadData_NLDAS(lstSelVariables, site, isite, nsites))
                 {
                     if (!lstStaDownloaded.Contains(site))
                     {
@@ -193,6 +193,7 @@ namespace NCEIData
             }
         }
 
+
         /// <summary>
         /// DownloadData_NLDAS
         /// Downloads NLDAS data (all variables) for a grid point and saves to WDMFile
@@ -202,7 +203,7 @@ namespace NCEIData
         /// <param name="isite"></param>
         /// <param name="nsites"></param>
         /// <returns></returns>
-        private bool DownloadData_NLDAS(List<string> selectedVars, string site, int isite, int nsites)
+        private bool DownloadData_NLDAS2(List<string> selectedVars, string site, int isite, int nsites)
         {
             Cursor.Current = Cursors.WaitCursor;
             //nldas base url e.g ----------------------------------------------
@@ -255,6 +256,152 @@ namespace NCEIData
                     bool isDloaded = false;
                     D4EM.Data.Download.DisableHttpsCertificateCheck();
                     D4EM.Data.Download.SetSecurityProtocol();
+
+                    if (!File.Exists(nldasfile))
+                        isDloaded = D4EM.Data.Download.DownloadURL(lURL, nldasfile);
+                    else //file exist
+                        isDloaded = true;
+                    if (isDloaded)
+                    {
+                        fMain.WriteLogFile("Downloaded " + svar + " data for " + site);
+                        //get elevation since download does not read elevation attribute
+                        double elev = GetGridElevation(nldasfile);
+                        if (ProcessSiteDownloadedData(site, svar, nldasfile, elev, isite, nsites))
+                        {
+                            switch (svar)
+                            {
+                                case "Rainf":
+                                    lstProcessedVar.Add("PREC");
+                                    break;
+                                case "Tair":
+                                    lstProcessedVar.Add("ATEM");
+                                    break;
+                                case "Wind_E":
+                                    lstProcessedVar.Add("WIND");
+                                    lstProcessedVar.Add("WNDD");
+                                    break;
+                                case "SWdown":
+                                    lstProcessedVar.Add("SOLR");
+                                    lstProcessedVar.Add("LRAD");
+                                    lstProcessedVar.Add("CLOU");
+                                    break;
+                                case "Qair":
+                                    lstProcessedVar.Add("DEWP");
+                                    break;
+                                case "PSurf":
+                                    lstProcessedVar.Add("ATMP");
+                                    break;
+                                case "PEVAPsfc":
+                                    //lstProcessedVar.Add("PEVT");
+                                    break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    string msg = "Error downloading and processing NLDAS data: " + site + "-" + svar;
+                    ShowError(msg, ex);
+                }
+            }
+
+            //add grid to dictionary
+            dictSiteVars.Add(site, lstProcessedVar);
+            lstProcessedVar = null;
+
+            Cursor.Current = Cursors.Default;
+            WriteStatus("Ready ..");
+
+            if (!File.Exists(nldasfile)) //file for each variable
+                return false;
+            else
+                return true;
+        }
+
+
+        /// <summary>
+        /// DownloadData_NLDAS
+        /// Downloads NLDAS data (all variables) for a grid point and saves to WDMFile
+        /// </summary>
+        /// <param name="selectedVars"></param>
+        /// <param name="site"></param>
+        /// <param name="isite"></param>
+        /// <param name="nsites"></param>
+        /// <returns></returns>
+        private async Task<bool>  DownloadData_NLDAS(List<string> selectedVars, string site, int isite, int nsites)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            //nldas base url e.g ----------------------------------------------
+            //site is X000Y000
+            //download and imports to wdm file
+            //-----------------------------------------------------------------
+
+            string prefix = "NLDAS_FORA0125_H_2_0_";
+
+            string nldasfile = string.Empty;
+            string gridX = site.Substring(1, 3);
+            string gridY = site.Substring(5, 3);
+
+            MetGages sta = new MetGages();
+            dictSelSites.TryGetValue(site, out sta);
+            string gridLat = Convert.ToString(sta.LATITUDE);
+            string gridLng = Convert.ToString(sta.LONGITUDE);
+
+            //string urlpath = "https://hydro1.sci.gsfc.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS:NLDAS_FORA0125_H.002:";
+            //"https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS2:NLDAS_FORA0125_H_v2.0:Tair&startDate=2024-01-01T00&endDate=2025-01-01T00&location=GEOM:POINT(-96.1875,%2043.9375)&type=asc2";
+            string urlpath = "https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=NLDAS2:NLDAS_FORA0125_H_v2.0:";
+
+            atcDateFormat lDateFormat = new atcUtility.atcDateFormat();
+            lDateFormat.DateOrder = atcDateFormat.DateOrderEnum.YearMonthDay;
+            lDateFormat.IncludeMinutes = true;
+            lDateFormat.IncludeSeconds = true;
+            lDateFormat.DateSeparator = "-";
+            lDateFormat.DateTimeSeparator = "T";
+            lDateFormat.Midnight24 = false;
+
+            string lStartDate = lDateFormat.JDateToString(BegDate.ToOADate());
+            string lEndDate = lDateFormat.JDateToString(EndDate.ToOADate());
+
+            //iterate for all selected variables in the grid
+            List<string> lstProcessedVar = new List<string>();
+
+            foreach (string svar in selectedVars)
+            {
+                var nldas = new clsNLDAS_GES_DISC();
+
+                string lURL = string.Empty;
+                double bdt = BegDate.Date.ToOADate();
+                double edt = EndDate.Date.ToOADate();
+                nldasfile = Path.Combine(cacheFolder, site);
+                nldasfile += "-" + svar + "_" + bdt.ToString() + "_" + edt.ToString() + ".txt";
+                WriteStatus("Downloading " + svar + " data for " + site +
+                          "(" + isite.ToString() + " of " + nsites.ToString() + ")");
+
+                lURL = urlpath + svar;
+                lURL += "&startDate=" + lStartDate;
+                lURL += "&endDate=" + lEndDate;
+                lURL += "&location=GEOM:POINT(" + gridLng + ",%20" + gridLat + ")&type=asc2";
+
+                try
+                {
+
+                    bool isDloaded = false;
+                    string svar1 = prefix + svar;
+                    double lat = Convert.ToDouble(gridLat);
+                    double lon = Convert.ToDouble(gridLng);
+                    // Get time series data
+                    var (headers, dataPoints) = await nldas.GetTimeSeriesDataAsync(
+                        lat, lon, lStartDate, lEndDate, svar1);
+
+                    // Save to CSV file
+                    string outputFile = "time_series_output.csv";
+                    await nldas.SaveToCsvAsync(headers, dataPoints, nldasfile);
+
+
+
+
+                    //D4EM.Data.Download.DisableHttpsCertificateCheck();
+                    //D4EM.Data.Download.SetSecurityProtocol();
 
                     if (!File.Exists(nldasfile))
                         isDloaded = D4EM.Data.Download.DownloadURL(lURL, nldasfile);
