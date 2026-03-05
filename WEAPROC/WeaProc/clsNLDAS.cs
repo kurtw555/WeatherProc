@@ -390,18 +390,12 @@ namespace NCEIData
                     double lat = Convert.ToDouble(gridLat);
                     double lon = Convert.ToDouble(gridLng);
                     // Get time series data
-                    var (headers, dataPoints) = await nldas.GetTimeSeriesDataAsync(
+                    var (headers, dataPoints) = nldas.GetTimeSeriesData(
                         lat, lon, lStartDate, lEndDate, svar1);
 
                     // Save to CSV file
-                    string outputFile = "time_series_output.csv";
-                    await nldas.SaveToCsvAsync(headers, dataPoints, nldasfile);
-
-
-
-
-                    //D4EM.Data.Download.DisableHttpsCertificateCheck();
-                    //D4EM.Data.Download.SetSecurityProtocol();
+                    //string outputFile = "time_series_output.csv";
+                    nldas.SaveToCsv(headers, dataPoints, nldasfile);
 
                     if (!File.Exists(nldasfile))
                         isDloaded = D4EM.Data.Download.DownloadURL(lURL, nldasfile);
