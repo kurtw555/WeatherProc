@@ -369,15 +369,21 @@ namespace NCEIData
             {
                 var nldas = new clsNLDAS_GES_DISC();
 
-                string lURL = string.Empty;
-                double bdt = BegDate.Date.ToOADate();
-                double edt = EndDate.Date.ToOADate();
-                nldasfile = Path.Combine(cacheFolder, site);
-                nldasfile += "-" + svar + "_" + bdt.ToString() + "_" + edt.ToString() + ".txt";
-                WriteStatus("Downloading " + svar + " data for " + site +
-                          "(" + isite.ToString() + " of " + nsites.ToString() + ")");
+				string lURL = string.Empty;
+				double bdt = BegDate.Date.ToOADate();
+				double edt = EndDate.Date.ToOADate();
+				double LatDec = Convert.ToDouble(gridLat);
+				double LngDec = Convert.ToDouble(gridLng);
+				//nldasfile = Path.Combine(cacheFolder, site);
+				nldasfile = Path.Combine(cacheFolder, svar);
+				//nldasfile += "-" + svar + "_" + bdt.ToString() + "_" + edt.ToString() + ".txt";
+				nldasfile += ".Lng" + LngDec + ".Lat" + LatDec + "_" +
+					BegDate.Date.Year + "-" + BegDate.Date.Month.ToString("0#") + "-" + BegDate.Date.Day.ToString("0#") + "T00to" +
+					EndDate.Date.Year + "-" + EndDate.Date.Month.ToString("0#") + "-" + EndDate.Date.Day.ToString("0#") + "T23" + ".nldas.txt";
+				WriteStatus("Downloading " + svar + " data for " + site +
+						  "(" + isite.ToString() + " of " + nsites.ToString() + ")");
 
-                lURL = urlpath + svar;
+				lURL = urlpath + svar;
                 lURL += "&startDate=" + lStartDate;
                 lURL += "&endDate=" + lEndDate;
                 lURL += "&location=GEOM:POINT(" + gridLng + ",%20" + gridLat + ")&type=asc2";
@@ -395,10 +401,13 @@ namespace NCEIData
 
                     // Save to CSV file
                     //string outputFile = "time_series_output.csv";
-                    nldas.SaveToCsv(headers, dataPoints, nldasfile);
+                    //nldas.SaveToCsv(headers, dataPoints, nldasfile);
 
                     if (!File.Exists(nldasfile))
-                        isDloaded = D4EM.Data.Download.DownloadURL(lURL, nldasfile);
+                    {
+						//isDloaded = D4EM.Data.Download.DownloadURL(lURL, nldasfile);
+						isDloaded = nldas.SaveToCsv(headers, dataPoints, nldasfile);
+					}
                     else //file exist
                         isDloaded = true;
                     if (isDloaded)

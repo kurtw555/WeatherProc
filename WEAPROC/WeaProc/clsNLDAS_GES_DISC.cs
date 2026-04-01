@@ -170,21 +170,31 @@ namespace NCEIData
             return ParseCsv(csvData);
         }
 
-        public void SaveToCsv(Dictionary<string, string> headers, List<TimeSeriesDataPoint> dataPoints,
-            string filePath)
+        public bool SaveToCsv(Dictionary<string, string> headers, List<TimeSeriesDataPoint> dataPoints, string filePath)
         {
-            using var writer = new StreamWriter(filePath);
-            foreach (var header in headers)
+            bool success = false;
+            try
             {
-                writer.WriteLine($"{header.Key},{header.Value}");
+                using var writer = new StreamWriter(filePath);
+                foreach (var header in headers)
+                {
+                    writer.WriteLine($"{header.Key},{header.Value}");
+                }
+                writer.WriteLine();
+                writer.WriteLine("Timestamp,Value");
+                foreach (var point in dataPoints)
+                {
+                    writer.WriteLine($"{point.Timestamp:yyyy-MM-ddTHH:mm:ss},{point.Value}");
+                }
+                success = true;
             }
-            writer.WriteLine();
-            writer.WriteLine("Timestamp,Value");
-            foreach (var point in dataPoints)
+            catch (Exception ex)
             {
-                writer.WriteLine($"{point.Timestamp:yyyy-MM-ddTHH:mm:ss},{point.Value}");
+
             }
+            return success;
         }
+
 
         public void Dispose()
         {
