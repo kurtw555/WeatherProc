@@ -129,6 +129,9 @@
     <EmbeddedResource Remove="Resources.resx" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Resource1.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

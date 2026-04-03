@@ -29,9 +29,9 @@
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.5" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.113.1" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />    
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="frmDB.cs" />
@@ -40,5 +40,8 @@
     <Compile Remove="frmWeaSDB.Designer.cs" />
     <EmbeddedResource Remove="frmDB.resx" />
     <EmbeddedResource Remove="frmWeaSDB.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="App.config" />
   </ItemGroup>
 </Project>

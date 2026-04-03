@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -11,12 +11,13 @@ namespace WeaModelSDB
     public class WeaModelDB
     {
         private string sdbFile;
-        private SQLiteConnection conn;
+        private SqliteConnection conn;
         private string errmsg;
         private SortedDictionary<string, string> dictSta;
         private StreamWriter wrlog;
         public WeaModelDB(StreamWriter _wrlog, string _sdbFile)
         {
+            this.wrlog = _wrlog;
             this.sdbFile = _sdbFile;
             if (!OpenDataBase()) return;
             dictSta = new SortedDictionary<string, string>();
@@ -27,7 +28,7 @@ namespace WeaModelSDB
             try
             {
                 string connStr = "Data Source=" + sdbFile;
-                conn = new SQLiteConnection(connStr);
+                conn = new SqliteConnection(connStr);
                 conn.Open();
                 return true;
             }
@@ -44,7 +45,6 @@ namespace WeaModelSDB
         }
         public SortedDictionary<string, string> ReadStationsTable(out string errmsg)
         {
-            DataTable dbSta = new DataTable();
             SortedDictionary<string, string> dictSta = new SortedDictionary<string, string>();
             errmsg = string.Empty;
 
@@ -55,26 +55,22 @@ namespace WeaModelSDB
                 qry.Append("STATIONS");
                 qry.Append(" ORDER BY STATION_ID ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(dbSta);
-                qry = null;
-                adapter = null;
-
-                foreach (DataRow dr in dbSta.Rows)
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string sta = dr["STATION_ID"].ToString();
-                    if (!dictSta.ContainsKey(sta))
-                        dictSta.Add(sta, dr["STATION_NAME"].ToString());
+                    while (reader.Read())
+                    {
+                        string sta = reader["STATION_ID"].ToString();
+                        if (!dictSta.ContainsKey(sta))
+                            dictSta.Add(sta, reader["STATION_NAME"].ToString());
+                    }
                 }
-                dbSta = null;
 
-                //debug
-                //foreach (var kv in dictSta)
-                //    Debug.WriteLine("{0},{1}", kv.Key, kv.Value);
                 return dictSta;
             }
             catch (Exception ex)
             {
+                errmsg = ex.Message;
                 return null;
             }
         }
@@ -88,20 +84,29 @@ namespace WeaModelSDB
             try
             {
                 StringBuilder qry = new StringBuilder();
-                //qry.Append("SELECT DISTINCT STATION_ID, METVAR AS VARIABLE FROM ");
-                //qry.Append("MODEL ");
-                //qry.Append(" ORDER BY STATION_ID ");
-
                 //inner join query to get station info
                 qry.Append("SELECT DISTINCT MODEL.STATION_ID, MODEL.METVAR, STATIONS.STATION_NAME FROM ");
                 qry.Append("MODEL INNER JOIN STATIONS ");
                 qry.Append("ON MODEL.STATION_ID = STATIONS.STATION_ID ");
                 qry.Append("ORDER BY MODEL.STATION_ID ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(dbSta);
-                qry = null;
-                adapter = null;
+                // Create DataTable structure
+                dbSta.Columns.Add("STATION_ID", typeof(string));
+                dbSta.Columns.Add("METVAR", typeof(string));
+                dbSta.Columns.Add("STATION_NAME", typeof(string));
+
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DataRow row = dbSta.NewRow();
+                        row["STATION_ID"] = reader["STATION_ID"];
+                        row["METVAR"] = reader["METVAR"];
+                        row["STATION_NAME"] = reader["STATION_NAME"];
+                        dbSta.Rows.Add(row);
+                    }
+                }
 
                 return dbSta;
             }
@@ -119,23 +124,20 @@ namespace WeaModelSDB
             int nrecs = 0;
             try
             {
-                var cmd = new SQLiteCommand(conn);
-
                 StringBuilder qry = new StringBuilder();
                 qry.Append("INSERT OR REPLACE INTO Model");
                 qry.Append("(Station_ID, MetVar, Parameter, Result, Interval)");
                 qry.Append(" VALUES(");
-                //qry.Append(_rowid_ + ",");
                 qry.Append("'" + StaID + "',");
                 qry.Append("'" + svar + "',");
                 qry.Append("'" + Param + "',");
                 qry.Append(value + ",");
                 qry.Append(tstep + ")");
 
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -152,21 +154,16 @@ namespace WeaModelSDB
             int nrecs = 0;
             try
             {
-                var cmd = new SQLiteCommand(conn);
-
                 StringBuilder qry = new StringBuilder();
                 qry.Append("DELETE FROM Model ");
                 qry.Append("WHERE ");
                 qry.Append("STATION_ID = '" + StaID + "' AND ");
                 qry.Append("METVAR = '" + svar + "'");
-                //qry.Append("PARAMETER = '" + Param + "'");
 
-                //Debug.WriteLine("Delete QRY = " + qry.ToString());
-
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -188,8 +185,6 @@ namespace WeaModelSDB
             int nrecs = 0;
             try
             {
-                var cmd = new SQLiteCommand(conn);
-
                 StringBuilder qry = new StringBuilder();
                 qry.Append("INSERT OR REPLACE INTO Stations");
                 qry.Append("(Station_ID, Station_Name, Dataset, Latitude," +
@@ -204,10 +199,10 @@ namespace WeaModelSDB
                 qry.Append("'" + huc + "',");
                 qry.Append("'" + state + "')");
 
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -231,33 +226,25 @@ namespace WeaModelSDB
         public SortedDictionary<string, double> ReadModelParameters(string site, string svar)
         {
             SortedDictionary<string, double> dictModel = new SortedDictionary<string, double>();
-            DataTable dbMdl = new DataTable();
 
             try
             {
                 StringBuilder qry = new StringBuilder();
-                //inner join query to get station info
                 qry.Append("SELECT STATION_ID, METVAR, PARAMETER, RESULT FROM ");
                 qry.Append("MODEL WHERE METVAR = '" + svar + "' ");
                 qry.Append("AND STATION_ID = '" + site + "' ");
                 qry.Append("ORDER BY PARAMETER ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(dbMdl);
-                qry = null;
-                adapter = null;
-
-                //copy to dictionary
-                foreach (DataRow dr in dbMdl.Rows)
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string param = dr["PARAMETER"].ToString();
-                    float fvalue = Convert.ToSingle(dr["RESULT"]);
-                    dictModel.Add(param, fvalue);
-
-                    //debug
-                    //Debug.WriteLine("{0},{1},{2},{3}", site, svar, param, fvalue.ToString());
+                    while (reader.Read())
+                    {
+                        string param = reader["PARAMETER"].ToString();
+                        float fvalue = Convert.ToSingle(reader["RESULT"]);
+                        dictModel.Add(param, fvalue);
+                    }
                 }
-                dbMdl = null;
             }
             catch (Exception ex)
             {

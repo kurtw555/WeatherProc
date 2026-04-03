@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SQLite;
+using Microsoft.Data.Sqlite;
 using System.Diagnostics;
 using System.Text;
 using System.Windows.Forms;
@@ -12,7 +12,7 @@ namespace WeaDB
     public class WeaSDB
     {
         private string sdbFile;
-        private SQLiteConnection conn;
+        private SqliteConnection conn; // Changed from SQLiteConnection
         private string errmsg;
         private SortedDictionary<string, clsStation> dictSta;
         private SortedDictionary<string, string> dictVar;
@@ -34,7 +34,7 @@ namespace WeaDB
             try
             {
                 string connStr = "Data Source=" + sdbFile;
-                conn = new SQLiteConnection(connStr);
+                conn = new SqliteConnection(connStr); // Changed from SQLiteConnection
                 conn.Open();
                 return true;
             }
@@ -52,8 +52,6 @@ namespace WeaDB
         }
         private SortedDictionary<string, clsStation> ReadStationsTable()
         {
-            DataTable dbSta = new DataTable();
-
             try
             {
                 StringBuilder qry = new StringBuilder();
@@ -61,28 +59,22 @@ namespace WeaDB
                 qry.Append("STATIONS ");
                 qry.Append("ORDER BY STATION_ID ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(dbSta);
-                qry = null;
-                adapter = null;
-
-                foreach (DataRow dr in dbSta.Rows)
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string sta = dr["STATION_ID"].ToString();
-                    if (!dictSta.ContainsKey(sta))
+                    while (reader.Read())
                     {
-                        clsStation csta = new clsStation();
-                        csta.STAID = sta;
-                        csta.StationName = dr["STATION_NAME"].ToString();
-                        dictSta.Add(sta, csta);
-                        csta = null;
+                        string sta = reader["STATION_ID"].ToString();
+                        if (!dictSta.ContainsKey(sta))
+                        {
+                            clsStation csta = new clsStation();
+                            csta.STAID = sta;
+                            csta.StationName = reader["STATION_NAME"].ToString();
+                            dictSta.Add(sta, csta);
+                        }
                     }
                 }
-                dbSta = null;
 
-                //debug
-                //foreach (var kv in dictSta)
-                //    Debug.WriteLine("{0},{1}", kv.Key, kv.Value);
                 return dictSta;
             }
             catch (Exception ex)
@@ -92,7 +84,6 @@ namespace WeaDB
         }
         private List<string> ReadPCODETable()
         {
-            DataTable db = new DataTable();
             List<string> lstVars = new List<string>();
 
             try
@@ -102,18 +93,16 @@ namespace WeaDB
                 qry.Append("PCODES ");
                 qry.Append("ORDER BY PCODE ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(db);
-                qry = null;
-                adapter = null;
-
-                foreach (DataRow dr in db.Rows)
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string svar = dr["PCODE"].ToString();
-                    if (!lstVars.Contains(svar))
-                        lstVars.Add(svar);
+                    while (reader.Read())
+                    {
+                        string svar = reader["PCODE"].ToString();
+                        if (!lstVars.Contains(svar))
+                            lstVars.Add(svar);
+                    }
                 }
-                db = null;
 
                 //debug
                 foreach (var kv in lstVars)
@@ -132,18 +121,16 @@ namespace WeaDB
                 lstOfPCODES.Add(svar);
             try
             {
-                var cmd = new SQLiteCommand(conn);
-
                 StringBuilder qry = new StringBuilder();
                 qry.Append("INSERT OR REPLACE INTO PCODES");
                 qry.Append("(PCode)");
                 qry.Append(" VALUES(");
                 qry.Append("'" + svar + "')");
 
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn)) // Provide command text and connection
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -155,7 +142,7 @@ namespace WeaDB
             return true;
         }
         public bool InsertRecordInStationTable(string StaID, string StaName, string dset, float lat,
-                                float lon, float elev)
+                        float lon, float elev)
         {
             if (dictSta.ContainsKey(StaID)) return false;
             else
@@ -172,8 +159,6 @@ namespace WeaDB
 
             try
             {
-                var cmd = new SQLiteCommand(conn);
-
                 StringBuilder qry = new StringBuilder();
                 qry.Append("INSERT OR REPLACE INTO Stations");
                 qry.Append("(Station_ID, Station_Name, Latitude," +
@@ -185,10 +170,10 @@ namespace WeaDB
                 qry.Append("'" + lon + "',");
                 qry.Append("'" + elev + "')");
 
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn)) // Provide command text and connection
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
@@ -202,7 +187,7 @@ namespace WeaDB
         public DataTable SelectRecordsFromMetTable(string tblName, string pcode, string staid)
         {
             DataTable db = new DataTable();
-            //call to delete table in main is disabled, need to check if records are in
+            
             try
             {
                 int nrec = 0;
@@ -213,17 +198,29 @@ namespace WeaDB
                 qry.Append("WHERE STATION_ID = '" + staid + "' AND PCODE = '" + pcode + "' ");
                 qry.Append("ORDER BY DATE_TIME ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(db);
-                qry = null;
-                adapter = null;
+                // Create DataTable structure
+                db.Columns.Add("DATE_TIME", typeof(string));
+                db.Columns.Add("RESULT", typeof(object));
 
-                if ((nrec = db.Rows.Count) == 0) return null;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        DataRow row = db.NewRow();
+                        row["DATE_TIME"] = reader["DATE_TIME"];
+                        row["RESULT"] = reader["RESULT"];
+                        db.Rows.Add(row);
+                        nrec++;
+                    }
+                }
+
+                if (nrec == 0) return null;
 
                 begdate = db.Rows[0]["DATE_TIME"].ToString();
                 enddate = db.Rows[nrec - 1]["DATE_TIME"].ToString();
                 Debug.WriteLine("db count = " + nrec.ToString());
-                //Debug.WriteLine("{0},{1}", begdate, enddate);
+                
                 dtbeg = DateTime.Parse(begdate);
                 dtend = DateTime.Parse(enddate);
                 Debug.WriteLine("{0},{1}", dtbeg.ToString(), dtend.ToString());
@@ -247,45 +244,40 @@ namespace WeaDB
         }
         public int GetPeriodOfRecord(string tblName, string pcode, string staid)
         {
-            DataTable db = new DataTable();
-            //call to delete table in main is disabled, need to check if records are in
             int nrec = 0;
             try
             {
-                string begdate, enddate;
+                string begdate = null, enddate = null;
 
                 StringBuilder qry = new StringBuilder();
                 qry.Append("SELECT DATE_TIME FROM MET ");
                 qry.Append("WHERE STATION_ID = '" + staid + "' AND PCODE = '" + pcode + "' ");
                 qry.Append("ORDER BY DATE_TIME ");
 
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(db);
-                qry = null;
-                adapter = null;
-
-                if ((nrec = db.Rows.Count) == 0)
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    db = null; return 0;
+                    while (reader.Read())
+                    {
+                        string dateTime = reader["DATE_TIME"].ToString();
+                        if (begdate == null) begdate = dateTime; // First record
+                        enddate = dateTime; // Keep updating to get last record
+                        nrec++;
+                    }
                 }
 
-                //if nnrec> -0
-                begdate = db.Rows[0]["DATE_TIME"].ToString();
-                enddate = db.Rows[nrec - 1]["DATE_TIME"].ToString();
-                //Debug.WriteLine("db count = " + nrec.ToString());
-                //Debug.WriteLine("{0},{1}", begdate, enddate);
+                if (nrec == 0) return 0;
+
                 dtbeg = DateTime.Parse(begdate);
                 dtend = DateTime.Parse(enddate);
-                //Debug.WriteLine("{0},{1}", dtbeg.ToString(), dtend.ToString());
             }
             catch (Exception ex)
             {
                 errmsg = "Error getting period of record for " + staid + ":" + pcode + "!" + Environment.NewLine + ex.Message +
                 Environment.NewLine + ex.StackTrace;
-                //Debug.WriteLine(errmsg);
                 nrec = 0;
             }
-            db = null;
+            
             return nrec;
         }
         public SortedDictionary<DateTime, double> FilterRecordsToUpload(DateTime dtbeg, DateTime dtend,
@@ -316,29 +308,18 @@ namespace WeaDB
         public bool InsertRecordsInMetTable(string tblName, SortedDictionary<DateTime, double> dictSeries,
                                             string pcode, string staid)
         {
-            string strdate, sval;
-            double dvalue;
             try
             {
-                // Insert data
-                //dtbeg = DateTime.Parse(begdate);
-                //dtend = DateTime.Parse(enddate);
-
-                var cmd = new SQLiteCommand(conn);
                 using (var transaction = conn.BeginTransaction())
                 {
                     foreach (var kv in dictSeries)
                     {
-
                         DateTime dt = kv.Key;
-                        strdate = dt.ToString("yyyy-MM-dd HH:mm:ss");
-                        sval = FormatPCODE(kv.Value, pcode);
-                        dvalue = Convert.ToDouble(sval);
+                        string strdate = dt.ToString("yyyy-MM-dd HH:mm:ss");
+                        string sval = FormatPCODE(kv.Value, pcode);
+                        double dvalue = Convert.ToDouble(sval);
 
-                        StringBuilder qry = new StringBuilder(string.Empty);
-                        //INSERT OR REPLACE RECORD
-                        //StringBuilder qry = new StringBuilder();
-                        qry.Clear();
+                        StringBuilder qry = new StringBuilder();
                         qry.Append("INSERT OR REPLACE INTO " + tblName);
                         qry.Append("(Station_ID, PCODE, Date_Time, Result)");
                         qry.Append(" VALUES(");
@@ -347,13 +328,14 @@ namespace WeaDB
                         qry.Append("datetime('" + strdate + "'),");
                         qry.Append(dvalue + ")");
 
-                        cmd.CommandText = qry.ToString();
-                        cmd.ExecuteNonQuery();
-                        qry = null;
+                        using (var cmd = new SqliteCommand(qry.ToString(), conn)) // Provide command text and connection
+                        {
+                            cmd.Transaction = transaction; // Set the transaction
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                     transaction.Commit();
                 }
-                cmd = null;
             }
             catch (Exception ex)
             {
@@ -367,34 +349,31 @@ namespace WeaDB
         public bool DeleteRecordsFromMetTable(string tblName, SortedDictionary<DateTime, double> dictSeries,
                                             string pcode, string staid)
         {
-            string strdate, sval;
-            double dvalue;
             try
             {
-                var cmd = new SQLiteCommand(conn);
                 using (var transaction = conn.BeginTransaction())
                 {
                     foreach (var kv in dictSeries)
                     {
+                        string strdate = kv.Key.ToString("yyyy-MM-dd HH:mm:ss");
+                        string sval = FormatPCODE(kv.Value, pcode);
+                        double dvalue = Convert.ToDouble(sval);
 
-                        strdate = kv.Key.ToString("yyyy-MM-dd HH:mm:ss");
-                        sval = FormatPCODE(kv.Value, pcode);
-                        dvalue = Convert.ToDouble(sval);
-
-                        StringBuilder qry = new StringBuilder(string.Empty);
+                        StringBuilder qry = new StringBuilder();
                         qry.Append("DELETE FROM " + tblName);
                         qry.Append(" WHERE ");
                         qry.Append("STATION_ID = '" + staid + "' AND ");
                         qry.Append("PCODE = '" + pcode + "' AND ");
                         qry.Append("DATE_TIME = datetime('" + strdate + "')");
 
-                        cmd.CommandText = qry.ToString();
-                        cmd.ExecuteNonQuery();
-                        qry = null;
+                        using (var cmd = new SqliteCommand(qry.ToString(), conn)) // Provide command text and connection
+                        {
+                            cmd.Transaction = transaction; // Set the transaction
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                     transaction.Commit();
                 }
-                cmd = null;
             }
             catch (Exception ex)
             {
@@ -460,22 +439,17 @@ namespace WeaDB
         }
         public bool TableExist(string tblName)
         {
-            //SELECT sql FROM sqlite_master WHERE type = 'table' AND tbl_name = 'COMPANY';
             try
             {
-                DataTable db = new DataTable();
                 StringBuilder qry = new StringBuilder();
                 qry.Append("SELECT * FROM sqlite_master WHERE type = 'table'");
-                qry.Append("AND tbl_name = " + "'" + tblName + "'");
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(qry.ToString(), conn);
-                adapter.Fill(db);
-                qry = null;
-                adapter = null;
+                qry.Append("AND tbl_name = '" + tblName + "'");
 
-                if (db.Rows.Count > 0)
-                    return true;
-                else
-                    return false;
+                using (var cmd = new SqliteCommand(qry.ToString(), conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    return reader.HasRows;
+                }
             }
             catch (Exception ex)
             {
@@ -483,32 +457,12 @@ namespace WeaDB
                     Environment.NewLine + ex.StackTrace;
                 MessageBox.Show(errmsg, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-
             }
         }
         public bool CreateTable(string tblName)
         {
             try
             {
-                //in WRDB create
-                //CREATE TABLE "Met"("RecID" INTEGER NOT NULL, "Station_ID" VARCHAR(25), 
-                //"Date_Time" DATETIME, "PCode" VARCHAR(10), "LEW_Pct" FLOAT, "Depth_M" FLOAT, 
-                //"Agency" VARCHAR(5), "CCode" CHAR(3), "LCode" CHAR(3), "SCode" CHAR(3), 
-                //"QCode" CHAR(1), "RCode" CHAR(1), "Result" FLOAT, "Validated" BOOL, 
-                //"Create_Update" DATETIME, "Owner" CHAR(3), "Track_ID" INT, 
-                //PRIMARY KEY("RecID" AUTOINCREMENT), UNIQUE("Station_ID", "PCode", "Date_Time"))
-
-                //simplified
-                //CREATE TABLE "Met"(
-                //"RecID" INTEGER NOT NULL,
-                //"Station_ID"    VARCHAR(25) UNIQUE,
-                //"Date_Time" DATETIME UNIQUE,
-                //"PCode" VARCHAR(10) UNIQUE,
-                //"Result"    FLOAT,
-                //"Create_Update" DATETIME,
-                //UNIQUE("Station_ID", "PCode", "Date_Time"),
-                //PRIMARY KEY("RecID" AUTOINCREMENT))
-
                 string qry = "CREATE TABLE " + tblName + "(" +
                     "RecID INTEGER NOT NULL," +
                     "Station_ID  VARCHAR(25)," +
@@ -519,11 +473,10 @@ namespace WeaDB
                     "PRIMARY KEY(RecID AUTOINCREMENT)," +
                     "UNIQUE(Station_ID, PCode, Date_Time))";
 
-                var cmd = new SQLiteCommand(conn);
-                cmd.CommandText = qry.ToString();
-                cmd.ExecuteNonQuery();
-                qry = null;
-                cmd = null;
+                using (var cmd = new SqliteCommand(qry, conn)) // Provide command text and connection
+                {
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {

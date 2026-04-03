@@ -53,4 +53,7 @@
   <ItemGroup>
     <Compile Remove="clsStation.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
 </Project>

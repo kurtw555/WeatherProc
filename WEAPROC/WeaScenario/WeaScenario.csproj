@@ -23,6 +23,9 @@
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="DotSpatial.Controls">
       <HintPath>..\bin\DotSpatial.Controls.dll</HintPath>
     </Reference>

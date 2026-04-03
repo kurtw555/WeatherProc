@@ -54,4 +54,7 @@
     <Compile Remove="clsDataWDM.vb" />
     <Compile Remove="clsWDM.vb" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="App.config" />
+  </ItemGroup>
 </Project>
