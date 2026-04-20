@@ -121,9 +121,9 @@ namespace NCEIData
                     optPCP.Checked = true;
                     lblUTC.Enabled = true;
                     numUTC.Enabled = true;
-                    optSLP.Enabled = false;
-                    optSLP.Checked = false;
-                    optSLP.Visible = false;
+                    optSLP.Enabled = true;
+                    optSLP.Checked = true;
+                    optSLP.Visible = true;
                     optPAN.Enabled = false;
                     optPAN.Checked = false;
                     break;
