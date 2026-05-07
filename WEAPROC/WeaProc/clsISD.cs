@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using wdmuploader;
 using WeaDB;
 using WeaModel;
@@ -135,7 +136,7 @@ namespace NCEIData
             string sfile = site + "_" + sitevars + dtbeg.ToString() + "_" + dtend.ToString() + ".json";
             return (Path.Combine(cachePath, sfile));
         }
-        public void ProcessISDdataRev()
+        public async void ProcessISDdataRev()
         {
             Cursor.Current = Cursors.WaitCursor;
 
@@ -199,7 +200,7 @@ namespace NCEIData
                     td.TotalSeconds.ToString("F4") + " seconds.");
 
                 string JSONfile = SetJSONFileName(site, BegDateTime, EndDateTime);
-                bool isDnloaded = DownloadData_ISDFile(JSONfile, selVars, site, isite, nsites);
+                bool isDnloaded = await DownloadData_ISDFile(JSONfile, selVars, site, isite, nsites);
 
                 td = DateTime.Now - dtstart;
                 fMain.WriteLogFile("End Download Data for " + site + ":" +
@@ -405,7 +406,7 @@ namespace NCEIData
         /// <param name="selVars"></param>
         /// <param name="site"></param>
         /// <returns></returns>
-        private bool DownloadData_ISDFile(string JSONfile, string selVars, string site, int isite, int nsites)
+        private async Task<bool> DownloadData_ISDFile(string JSONfile, string selVars, string site, int isite, int nsites)
         {
             bool isDnLoaded = false;
             dictJSONFiles.Clear();
@@ -456,7 +457,7 @@ namespace NCEIData
                     if (!File.Exists(JSONfile) || fi.Length < 10)
                     {
                         //download if not existing or existing but < 10 bytes
-                        isDnLoaded = DownloadISD(qrystr, JSONfile);
+                        isDnLoaded = await DownloadISD(qrystr, JSONfile);
                         if (isDnLoaded)
                         {
                             //fMain.WriteLogFile("Downloaded data for station " + site + " : " + sitevar);
@@ -1486,7 +1487,7 @@ namespace NCEIData
             Cursor.Current = Cursors.Default;
             return (reply);
         }
-        private bool DownloadISD(string url, string savefile)
+        private async Task<bool> DownloadISD(string url, string savefile)
         {
             Cursor.Current = Cursors.WaitCursor;
             bool isExist;
@@ -1496,7 +1497,7 @@ namespace NCEIData
             try
             {
                 //webGet.Url = url;
-                FileDownloader.DownloadFileAsync(url, savefile);
+                await FileDownloader.DownloadFileAsync(url, savefile);
                 //wait for download to complete before returning
 
                 //while (webGet.IsDownloadInProgress)
