@@ -1594,6 +1594,37 @@ namespace NCEIData
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
+        private void mnuNewWDM_Click(object sender, EventArgs e)
+        {
+            //create file if not exist
+            string sFile = "";
+            atcDataSourceWDM lWdmDS = new atcWDM.atcDataSourceWDM();            
+            lWdmDS.Open(sFile);
+            WdmFile = sFile;
+            mnuSearchDataset.Enabled = true;
+            mnuTimeSeries.Enabled = true;
+            lWdmDS = null;
+
+            //create SQLite dbfile
+            string path = Path.GetDirectoryName(WdmFile);
+            sFile = Path.GetFileNameWithoutExtension(WdmFile);
+            //SQLdbFile = Path.Combine(path, sFile + ".db");
+            //if(!File.Exists(SQLdbFile))
+            //    File.Copy(defaultSDB, SQLdbFile);
+            isOpenWDM = true;
+
+            //create annual wdmfile
+            AnnWdmFile = Path.Combine(Path.GetDirectoryName(WdmFile),
+                Path.GetFileNameWithoutExtension(WdmFile) + "_Annual.wdm");
+            //create file if not exist
+            if (!File.Exists(AnnWdmFile))
+            {
+                atcDataSourceWDM aWdm = new atcWDM.atcDataSourceWDM();
+                aWdm.Open(AnnWdmFile);
+                aWdm = null;
+            }
+        }
+
         private void mnuWDM_Click(object sender, EventArgs e)
         {
             string ext = ".wdm";
@@ -1988,7 +2019,8 @@ namespace NCEIData
             {
                 case (int)ZoomRegion.States:
                     //Debug.WriteLine("Area=" + selectedArea);
-                    if (!selectedArea.Contains("US"))
+                    //if (!selectedArea.Contains("US"))
+                    if (selectedArea.Contains("US"))
                     {
                         wrld.SelectionEnabled = false;
                         st.SelectionEnabled = true;

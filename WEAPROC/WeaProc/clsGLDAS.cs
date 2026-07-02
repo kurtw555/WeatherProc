@@ -1,11 +1,12 @@
 ﻿using atcData;
-using atcUtility;
 using atcTimeseriesGLDS;
+using atcUtility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeaModel;
 using WeaModelSDB;
@@ -41,7 +42,8 @@ namespace NCEIData
         private string crlf = Environment.NewLine;
         private StreamWriter wrm;
         private int PercentMiss;
-
+        // add near other const/fields
+        private const string GLDAS_PREFIX = "GLDAS_NOAH025_3H_2_1_";
         //data dictionaries missing
         private SortedDictionary<string, Dictionary<string, SortedDictionary<DateTime, string>>> dictMiss = new
                     SortedDictionary<string, Dictionary<string, SortedDictionary<DateTime, string>>>();
@@ -213,73 +215,69 @@ namespace NCEIData
         /// <param name="isite"></param>
         /// <param name="nsites"></param>
         /// <returns></returns>
-        private bool DownloadData_GLDAS(List<string> selectedVars, string site,
-                                        int isite, int nsites)
+    private bool DownloadData_GLDAS(List<string> selectedVars, string site, int isite, int nsites)
+    {
+        MetGages grid = new MetGages();
+        string xlon = string.Empty, ylat = string.Empty;
+
+        if (dictSelSites.TryGetValue(site, out grid))
         {
-            //gldas base url e.g ----------------------------------------------
-            //site is 000:000, can be 0000:000 for international
-            //download and imports to wdm file
-            //-----------------------------------------------------------------
+            xlon = grid.LONGITUDE;
+            ylat = grid.LATITUDE;
+        }
 
-            MetGages grid = new MetGages();
-            string xlon = string.Empty, ylat = string.Empty;
-            if (dictSelSites.TryGetValue(site, out grid))
-            {
-                xlon = grid.LONGITUDE;
-                ylat = grid.LATITUDE;
-            }
-            string gldasfile = string.Empty;
-            string gridX = site.Substring(1, 3);
-            string gridY = site.Substring(5, 3);
-            string urlpath = "https://hydro1.gesdisc.eosdis.nasa.gov/daac-bin/access/timeseries.cgi?variable=GLDAS2:GLDAS_NOAH025_3H_v2.1:";
+        if (!double.TryParse(xlon, out double lon) || !double.TryParse(ylat, out double lat))
+        {
+            fMain.WriteLogFile($"Invalid coordinates for GLDAS site {site}: lon={xlon}, lat={ylat}");
+            return false;
+        }
 
-            atcDateFormat lDateFormat = new atcUtility.atcDateFormat();
-            lDateFormat.DateOrder = atcDateFormat.DateOrderEnum.YearMonthDay;
-            lDateFormat.IncludeMinutes = false;
-            lDateFormat.DateSeparator = "-";
-            lDateFormat.DateTimeSeparator = "T";
+        atcDateFormat lDateFormat = new atcDateFormat
+        {
+            DateOrder = atcDateFormat.DateOrderEnum.YearMonthDay,
+            IncludeMinutes = true,
+            IncludeSeconds = true,
+            DateSeparator = "-",
+            DateTimeSeparator = "T",
+            Midnight24 = false
+        };
 
-            // .Year & "-" & aStartDate.Month & "-" & aStartDate.Day & "T" & aStartDate.Hour
-            // ' .Year & "-" & aStartDate.Month & "-" & aStartDate.Day & "T" & aStartDate.Hour
-            //string lStartDate = lDateFormat.JDateToString(BegDate.ToOADate());
-            //string lEndDate = lDateFormat.JDateToString(EndDate.ToOADate());
-            string lStartDate = BegDate.Year.ToString() + "-" + BegDate.Month.ToString("00") +
-                              "-" + BegDate.Day.ToString("00") + "T00";
-            string lEndDate = EndDate.Year.ToString() + "-" + EndDate.Month.ToString("00") +
-                              "-" + EndDate.Day.ToString("00") + "T23";
+        string lStartDate = lDateFormat.JDateToString(BegDate.ToOADate());
+        string lEndDate = lDateFormat.JDateToString(EndDate.ToOADate());
 
-            //iterate for all selected variables in the grid
-            List<string> lstProcessedVar = new List<string>();
-            Cursor.Current = Cursors.WaitCursor;
+        List<string> lstProcessedVar = new List<string>();
+        string gldasfile = string.Empty;
+
+        Cursor.Current = Cursors.WaitCursor;
+
+        try
+        {
+            using var gldasClient = new GesDiscTimeSeriesClient();
 
             foreach (string svar in selectedVars)
             {
-                string lURL = string.Empty;
-                double bdt = BegDate.Date.ToOADate();
-                double edt = EndDate.Date.ToOADate();
-                gldasfile = Path.Combine(cacheFolder, site);
-                gldasfile += "-" + svar + "_" + bdt.ToString() + "_" + edt.ToString() + ".txt";
-                WriteStatus("Downloading " + svar + " data for " + site +
-                          "(" + isite.ToString() + " of " + nsites.ToString() + ")");
+                string apiVar = GLDAS_PREFIX + svar;
 
-                lURL = urlpath + svar;
-                lURL += "&startDate=" + lStartDate;
-                lURL += "&endDate=" + lEndDate;
-                lURL += "&location=GEOM:POINT(" + xlon + ",%20" + ylat + ")&type=asc2";
+                gldasfile = Path.Combine(
+                    cacheFolder,
+                    $"{svar}.Lng{lon}.Lat{lat}_{BegDate:yyyy-MM-dd}T00to{EndDate:yyyy-MM-dd}T23.gldas.txt");
+
+                WriteStatus($"Downloading {svar} data for {site} ({isite} of {nsites})");
 
                 try
                 {
-                    bool isDloaded = false;
-                    D4EM.Data.Download.DisableHttpsCertificateCheck();
-                    D4EM.Data.Download.SetSecurityProtocol();
+                    bool isDownloaded;
+                    var (headers, dataPoints) = gldasClient.GetTimeSeriesData(lat, lon, lStartDate, lEndDate, apiVar);
 
                     if (!File.Exists(gldasfile))
-                        isDloaded = D4EM.Data.Download.DownloadURL(lURL, gldasfile);
-                    else //file exist
-                        isDloaded = true;
-                    if (isDloaded)
+                        isDownloaded = gldasClient.SaveToCsv(headers, dataPoints, gldasfile);
+                    else
+                        isDownloaded = true;
+
+                    if (isDownloaded)
                     {
-                        fMain.WriteLogFile("Downloaded " + svar + " data for " + site);
+                        fMain.WriteLogFile($"Downloaded {svar} data for {site}");
+
                         if (ProcessSiteDownloadedData(site, svar, gldasfile))
                         {
                             switch (svar)
@@ -310,23 +308,24 @@ namespace NCEIData
                 }
                 catch (Exception ex)
                 {
-                    string msg = "Error downloading and processing GLDAS data: " + site + "-" + svar;
+                    string msg = $"Error downloading and processing GLDAS data: {site}-{svar}";
                     ShowError(msg, ex);
                 }
             }
 
-            //add grid to dictionary
             dictSiteVars.Add(site, lstProcessedVar);
-            lstProcessedVar = null;
-
-            Cursor.Current = Cursors.Default;
             WriteStatus("Ready ..");
-
-            if (!File.Exists(gldasfile)) //file for each variable
-                return false;
-            else
-                return true;
         }
+        finally
+        {
+            Cursor.Current = Cursors.Default;
+        }
+
+        return File.Exists(gldasfile);
+    }
+
+
+
 
         /// <summary>
         /// ProcessSiteDownloadedData
