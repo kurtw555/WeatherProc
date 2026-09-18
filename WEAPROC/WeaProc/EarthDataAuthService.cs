@@ -56,6 +56,25 @@ namespace NCEIData
             return (username, password);
         }
 
+        public void WriteNetrcCredentials(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("Username is required.", nameof(username));
+
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Password is required.", nameof(password));
+
+            string netrcPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".netrc");
+
+            string netrcContent =
+                "machine urs.earthdata.nasa.gov" + Environment.NewLine +
+                $"    login {username}" + Environment.NewLine +
+                $"    password {password}" + Environment.NewLine;
+
+            File.WriteAllText(netrcPath, netrcContent);
+        }
+
         public string GetAccessToken()
         {
             try

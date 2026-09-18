@@ -35,6 +35,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             mnuMain = new System.Windows.Forms.MenuStrip();
             mnuDB = new System.Windows.Forms.ToolStripMenuItem();
+            mnuNewWDM = new System.Windows.Forms.ToolStripMenuItem();
             mnuWDM = new System.Windows.Forms.ToolStripMenuItem();
             mnuModelExport = new System.Windows.Forms.ToolStripMenuItem();
             mnuExportSDB = new System.Windows.Forms.ToolStripMenuItem();
@@ -114,7 +115,7 @@
             btnFilter = new System.Windows.Forms.Button();
             numBegYr = new System.Windows.Forms.NumericUpDown();
             tiTip = new System.Windows.Forms.ToolTip(components);
-            mnuNewWDM = new System.Windows.Forms.ToolStripMenuItem();
+            nASAEarthdataLoginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             mnuMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)spatialDockManager1).BeginInit();
             spatialDockManager1.Panel1.SuspendLayout();
@@ -167,6 +168,13 @@
             mnuDB.Text = "DataBase";
             mnuDB.ToolTipText = "Select, create or export database";
             mnuDB.Click += mnuDB_Click;
+            // 
+            // mnuNewWDM
+            // 
+            mnuNewWDM.Name = "mnuNewWDM";
+            mnuNewWDM.Size = new System.Drawing.Size(183, 22);
+            mnuNewWDM.Text = "New WDM";
+            mnuNewWDM.Click += mnuNewWDM_Click;
             // 
             // mnuWDM
             // 
@@ -476,7 +484,7 @@
             // 
             // mnuHelp
             // 
-            mnuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuAbout, mnuManual, mnuCMIP6, emailFernandezGlennepagovForProblemsToolStripMenuItem });
+            mnuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { mnuAbout, mnuManual, mnuCMIP6, emailFernandezGlennepagovForProblemsToolStripMenuItem, nASAEarthdataLoginToolStripMenuItem });
             mnuHelp.Name = "mnuHelp";
             mnuHelp.Size = new System.Drawing.Size(44, 22);
             mnuHelp.Text = "Help";
@@ -903,7 +911,7 @@
             tabPageSta.Margin = new System.Windows.Forms.Padding(4);
             tabPageSta.Name = "tabPageSta";
             tabPageSta.Padding = new System.Windows.Forms.Padding(4);
-            tabPageSta.Size = new System.Drawing.Size(1445, 626);
+            tabPageSta.Size = new System.Drawing.Size(1444, 629);
             tabPageSta.TabIndex = 0;
             tabPageSta.Tag = "tabGages";
             tabPageSta.Text = "Weather Gages";
@@ -923,7 +931,7 @@
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52F));
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            tableLayoutPanel2.Size = new System.Drawing.Size(1437, 618);
+            tableLayoutPanel2.Size = new System.Drawing.Size(1436, 621);
             tableLayoutPanel2.TabIndex = 1;
             // 
             // dgvSta
@@ -964,7 +972,7 @@
             dgvSta.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvSta.RowHeadersWidth = 10;
             dgvSta.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvSta.Size = new System.Drawing.Size(1429, 558);
+            dgvSta.Size = new System.Drawing.Size(1428, 561);
             dgvSta.TabIndex = 0;
             // 
             // tableLayoutPanel4
@@ -1050,12 +1058,12 @@
             numBegYr.TabIndex = 3;
             numBegYr.Value = new decimal(new int[] { 2019, 0, 0, 0 });
             // 
-            // mnuNewWDM
+            // nASAEarthdataLoginToolStripMenuItem
             // 
-            mnuNewWDM.Name = "mnuNewWDM";
-            mnuNewWDM.Size = new System.Drawing.Size(183, 22);
-            mnuNewWDM.Text = "New WDM";
-            mnuNewWDM.Click += mnuNewWDM_Click;
+            nASAEarthdataLoginToolStripMenuItem.Name = "nASAEarthdataLoginToolStripMenuItem";
+            nASAEarthdataLoginToolStripMenuItem.Size = new System.Drawing.Size(301, 22);
+            nASAEarthdataLoginToolStripMenuItem.Text = "NASA Earthdata Login";
+            nASAEarthdataLoginToolStripMenuItem.Click += nASAEarthdataLoginToolStripMenuItem_Click;
             // 
             // frmMain
             // 
@@ -1198,6 +1206,7 @@
         private System.Windows.Forms.ToolTip tiTip;
         private System.Windows.Forms.ToolStripMenuItem mnuSearchDatasetPRISM;
         private System.Windows.Forms.ToolStripMenuItem mnuNewWDM;
+        private System.Windows.Forms.ToolStripMenuItem nASAEarthdataLoginToolStripMenuItem;
     }
 }
 

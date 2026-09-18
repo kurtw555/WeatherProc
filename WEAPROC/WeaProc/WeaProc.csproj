@@ -102,6 +102,7 @@
     <PackageReference Include="DotSpatial.Symbology" Version="4.0.656" />
     <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
     <PackageReference Include="NetTopologySuite" Version="2.6.0" />
     <PackageReference Include="System.ComponentModel.Composition" Version="10.0.2" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
